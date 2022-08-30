@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include <bex/bex.hpp>
+#include "libsvm.hpp"
 
 #ifdef MX_API_VER
 #if MX_API_VER < 0x07030000
@@ -18,11 +18,13 @@ typedef int mwIndex;
 #define min(x,y) (((x)<(y))?(x):(y))
 #endif
 
-void exit_with_help()
+const char* svmread_help;
+static void exit_with_help()
 {
-	bxPrintf(
+	svmread_help =
 	"Usage: [label_vector, instance_matrix] = libsvmread('filename');\n"
-	);
+	;
+	bxPrintf(svmread_help);
 }
 
 static void fake_answer(int nlhs, bxArray *plhs[])
@@ -185,7 +187,7 @@ void read_problem(const char *filename, int nlhs, bxArray *plhs[])
 	}
 }
 
-void mexFunction( int nlhs, bxArray *plhs[],
+void svmread( int nlhs, bxArray *plhs[],
 		int nrhs, const bxArray *prhs[] )
 {
 	char filename[256];

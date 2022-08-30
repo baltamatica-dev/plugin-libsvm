@@ -3,6 +3,7 @@
 #include "svm.h"
 
 #include <bex/bex.hpp>
+#include "libsvm.hpp"
 
 #ifdef MX_API_VER
 #if MX_API_VER < 0x07030000
@@ -14,7 +15,7 @@ typedef int mwIndex;
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 
-static const char *field_names[] = {
+const char *field_names[] = {
 	"Parameters",
 	"nr_class",
 	"totalSV",

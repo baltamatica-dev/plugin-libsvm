@@ -3,8 +3,7 @@
 #include <string.h>
 #include "svm.h"
 
-#include <bex/bex.hpp>
-#include "svm_model_matlab.h"
+#include "libsvm.hpp"
 
 #ifdef MX_API_VER
 #if MX_API_VER < 0x07030000
@@ -255,9 +254,10 @@ void predict(int nlhs, bxArray *plhs[], const bxArray *prhs[], struct svm_model 
 	}
 }
 
-void exit_with_help()
+const char* svmpredict_help;
+static void exit_with_help()
 {
-	bxPrintf(
+	svmpredict_help =
 		"Usage: [predicted_label, accuracy, decision_values/prob_estimates] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')\n"
 		"       [predicted_label] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')\n"
 		"Parameters:\n"
@@ -269,10 +269,11 @@ void exit_with_help()
 		"  predicted_label: SVM prediction output vector.\n"
 		"  accuracy: a vector with accuracy, mean squared error, squared correlation coefficient.\n"
 		"  prob_estimates: If selected, probability estimate vector.\n"
-	);
+	;
+	bxPrintf(svmpredict_help);
 }
 
-void mexFunction( int nlhs, bxArray *plhs[],
+void svmpredict( int nlhs, bxArray *plhs[],
 		 int nrhs, const bxArray *prhs[] )
 {
 	int prob_estimate_flag = 0;

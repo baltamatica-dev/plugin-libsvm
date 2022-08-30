@@ -4,8 +4,7 @@
 #include <ctype.h>
 #include "svm.h"
 
-#include <bex/bex.hpp>
-#include "svm_model_matlab.h"
+#include "libsvm.hpp"
 
 #ifdef MX_API_VER
 #if MX_API_VER < 0x07030000
@@ -19,9 +18,10 @@ typedef int mwIndex;
 void print_null(const char *s) {}
 void print_string_matlab(const char *s) {bxPrintf(s);}
 
-void exit_with_help()
+const char* svmtrain_help;
+static void exit_with_help()
 {
-	bxPrintf(
+	svmtrain_help = 
 	"Usage: model = svmtrain(training_label_vector, training_instance_matrix, 'libsvm_options');\n"
 	"libsvm_options:\n"
 	"-s svm_type : set type of SVM (default 0)\n"
@@ -49,7 +49,8 @@ void exit_with_help()
 	"-wi weight : set the parameter C of class i to weight*C, for C-SVC (default 1)\n"
 	"-v n: n-fold cross validation mode\n"
 	"-q : quiet mode (no outputs)\n"
-	);
+	;
+	bxPrintf(svmtrain_help);
 }
 
 // svm arguments
@@ -381,7 +382,7 @@ static void fake_answer(int nlhs, bxArray *plhs[])
 
 // Interface function of matlab
 // now assume prhs[0]: label prhs[1]: features
-void mexFunction( int nlhs, bxArray *plhs[],
+void svmtrain( int nlhs, bxArray *plhs[],
 		int nrhs, const bxArray *prhs[] )
 {
 	const char *error_msg;

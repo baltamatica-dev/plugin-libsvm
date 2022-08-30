@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <bex/bex.hpp>
+#include "libsvm.hpp"
 
 #ifdef MX_API_VER
 #if MX_API_VER < 0x07030000
@@ -9,11 +9,13 @@ typedef int mwIndex;
 #endif
 #endif
 
-void exit_with_help()
+const char* svmwrite_help;
+static void exit_with_help()
 {
-	bxPrintf(
+	svmwrite_help =
 	"Usage: libsvmwrite('filename', label_vector, instance_matrix);\n"
-	);
+	;
+	bxPrintf(svmwrite_help);
 }
 
 static void fake_answer(int nlhs, bxArray *plhs[])
@@ -81,7 +83,7 @@ void libsvmwrite(const char *filename, const bxArray *label_vec, const bxArray *
 	return;
 }
 
-void mexFunction( int nlhs, bxArray *plhs[],
+void svmwrite( int nlhs, bxArray *plhs[],
 		int nrhs, const bxArray *prhs[] )
 {
 	if(nlhs > 0)
