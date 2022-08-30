@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include "mex.h"
+#include <bex/bex.hpp>
 
 #ifdef MX_API_VER
 #if MX_API_VER < 0x07030000
@@ -20,16 +20,16 @@ typedef int mwIndex;
 
 void exit_with_help()
 {
-	mexPrintf(
+	bxPrintf(
 	"Usage: [label_vector, instance_matrix] = libsvmread('filename');\n"
 	);
 }
 
-static void fake_answer(int nlhs, mxArray *plhs[])
+static void fake_answer(int nlhs, bxArray *plhs[])
 {
 	int i;
 	for(i=0;i<nlhs;i++)
-		plhs[i] = mxCreateDoubleMatrix(0, 0, mxREAL);
+		plhs[i] = bxCreateDoubleMatrix(0, 0, bxREAL);
 }
 
 static char *line;
@@ -54,18 +54,18 @@ static char* readline(FILE *input)
 }
 
 // read in a problem (in libsvm format)
-void read_problem(const char *filename, int nlhs, mxArray *plhs[])
+void read_problem(const char *filename, int nlhs, bxArray *plhs[])
 {
 	int max_index, min_index, inst_max_index;
 	size_t elements, k, i, l=0;
 	FILE *fp = fopen(filename,"r");
 	char *endptr;
-	mwIndex *ir, *jc;
+	baIndex *ir, *jc;
 	double *labels, *samples;
 
 	if(fp == NULL)
 	{
-		mexPrintf("can't open input file %s\n",filename);
+		bxPrintf("can't open input file %s\n",filename);
 		fake_answer(nlhs, plhs);
 		return;
 	}
@@ -95,7 +95,7 @@ void read_problem(const char *filename, int nlhs, mxArray *plhs[])
 			index = (int) strtol(idx,&endptr,10);
 			if(endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index)
 			{
-				mexPrintf("Wrong input format at line %d\n",l+1);
+				bxPrintf("Wrong input format at line %d\n",l+1);
 				fake_answer(nlhs, plhs);
 				return;
 			}
@@ -111,17 +111,17 @@ void read_problem(const char *filename, int nlhs, mxArray *plhs[])
 	rewind(fp);
 
 	// y
-	plhs[0] = mxCreateDoubleMatrix(l, 1, mxREAL);
+	plhs[0] = bxCreateDoubleMatrix(l, 1, bxREAL);
 	// x^T
 	if (min_index <= 0)
-		plhs[1] = mxCreateSparse(max_index-min_index+1, l, elements, mxREAL);
+		plhs[1] = bxCreateSparse(max_index-min_index+1, l, elements, bxREAL);
 	else
-		plhs[1] = mxCreateSparse(max_index, l, elements, mxREAL);
+		plhs[1] = bxCreateSparse(max_index, l, elements, bxREAL);
 
-	labels = mxGetPr(plhs[0]);
-	samples = mxGetPr(plhs[1]);
-	ir = mxGetIr(plhs[1]);
-	jc = mxGetJc(plhs[1]);
+	labels = bxGetPr(plhs[0]);
+	samples = bxGetPr(plhs[1]);
+	ir = bxGetIr(plhs[1]);
+	jc = bxGetJc(plhs[1]);
 
 	k=0;
 	for(i=0;i<l;i++)
@@ -134,14 +134,14 @@ void read_problem(const char *filename, int nlhs, mxArray *plhs[])
 		label = strtok(line," \t\n");
 		if(label == NULL)
 		{
-			mexPrintf("Empty line at line %d\n",i+1);
+			bxPrintf("Empty line at line %d\n",i+1);
 			fake_answer(nlhs, plhs);
 			return;
 		}
 		labels[i] = strtod(label,&endptr);
 		if(endptr == label || *endptr != '\0')
 		{
-			mexPrintf("Wrong input format at line %d\n",i+1);
+			bxPrintf("Wrong input format at line %d\n",i+1);
 			fake_answer(nlhs, plhs);
 			return;
 		}
@@ -154,13 +154,13 @@ void read_problem(const char *filename, int nlhs, mxArray *plhs[])
 			if(val == NULL)
 				break;
 
-			ir[k] = (mwIndex) (strtol(idx,&endptr,10) - min_index); // precomputed kernel has <index> start from 0
+			ir[k] = (baIndex) (strtol(idx,&endptr,10) - min_index); // precomputed kernel has <index> start from 0
 
 			errno = 0;
 			samples[k] = strtod(val,&endptr);
 			if (endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr)))
 			{
-				mexPrintf("Wrong input format at line %d\n",i+1);
+				bxPrintf("Wrong input format at line %d\n",i+1);
 				fake_answer(nlhs, plhs);
 				return;
 			}
@@ -173,11 +173,11 @@ void read_problem(const char *filename, int nlhs, mxArray *plhs[])
 	free(line);
 
 	{
-		mxArray *rhs[1], *lhs[1];
+		bxArray *rhs[1], *lhs[1];
 		rhs[0] = plhs[1];
 		if(mexCallMATLAB(1, lhs, 1, rhs, "transpose"))
 		{
-			mexPrintf("Error: cannot transpose problem\n");
+			bxPrintf("Error: cannot transpose problem\n");
 			fake_answer(nlhs, plhs);
 			return;
 		}
@@ -185,8 +185,8 @@ void read_problem(const char *filename, int nlhs, mxArray *plhs[])
 	}
 }
 
-void mexFunction( int nlhs, mxArray *plhs[],
-		int nrhs, const mxArray *prhs[] )
+void mexFunction( int nlhs, bxArray *plhs[],
+		int nrhs, const bxArray *prhs[] )
 {
 	char filename[256];
 
@@ -197,11 +197,11 @@ void mexFunction( int nlhs, mxArray *plhs[],
 		return;
 	}
 
-	mxGetString(prhs[0], filename, mxGetN(prhs[0]) + 1);
+	bxAsCStr(prhs[0], filename, bxGetN(prhs[0]) + 1);
 
 	if(filename == NULL)
 	{
-		mexPrintf("Error: filename is NULL\n");
+		bxPrintf("Error: filename is NULL\n");
 		return;
 	}
 
@@ -209,4 +209,3 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
 	return;
 }
-

@@ -2,7 +2,7 @@
 #include <string.h>
 #include "svm.h"
 
-#include "mex.h"
+#include <bex/bex.hpp>
 
 #ifdef MX_API_VER
 #if MX_API_VER < 0x07030000
@@ -29,18 +29,18 @@ static const char *field_names[] = {
 	"SVs"
 };
 
-const char *model_to_matlab_structure(mxArray *plhs[], int num_of_feature, struct svm_model *model)
+const char *model_to_matlab_structure(bxArray *plhs[], int num_of_feature, struct svm_model *model)
 {
 	int i, j, n;
 	double *ptr;
-	mxArray *return_model, **rhs;
+	bxArray *return_model, **rhs;
 	int out_id = 0;
 
-	rhs = (mxArray **)mxMalloc(sizeof(mxArray *)*NUM_OF_RETURN_FIELD);
+	rhs = (bxArray **)malloc(sizeof(bxArray *)*NUM_OF_RETURN_FIELD);
 
 	// Parameters
-	rhs[out_id] = mxCreateDoubleMatrix(5, 1, mxREAL);
-	ptr = mxGetPr(rhs[out_id]);
+	rhs[out_id] = bxCreateDoubleMatrix(5, 1, bxREAL);
+	ptr = bxGetPr(rhs[out_id]);
 	ptr[0] = model->param.svm_type;
 	ptr[1] = model->param.kernel_type;
 	ptr[2] = model->param.degree;
@@ -49,21 +49,21 @@ const char *model_to_matlab_structure(mxArray *plhs[], int num_of_feature, struc
 	out_id++;
 
 	// nr_class
-	rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
-	ptr = mxGetPr(rhs[out_id]);
+	rhs[out_id] = bxCreateDoubleMatrix(1, 1, bxREAL);
+	ptr = bxGetPr(rhs[out_id]);
 	ptr[0] = model->nr_class;
 	out_id++;
 
 	// total SV
-	rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
-	ptr = mxGetPr(rhs[out_id]);
+	rhs[out_id] = bxCreateDoubleMatrix(1, 1, bxREAL);
+	ptr = bxGetPr(rhs[out_id]);
 	ptr[0] = model->l;
 	out_id++;
 
 	// rho
 	n = model->nr_class*(model->nr_class-1)/2;
-	rhs[out_id] = mxCreateDoubleMatrix(n, 1, mxREAL);
-	ptr = mxGetPr(rhs[out_id]);
+	rhs[out_id] = bxCreateDoubleMatrix(n, 1, bxREAL);
+	ptr = bxGetPr(rhs[out_id]);
 	for(i = 0; i < n; i++)
 		ptr[i] = model->rho[i];
 	out_id++;
@@ -71,79 +71,79 @@ const char *model_to_matlab_structure(mxArray *plhs[], int num_of_feature, struc
 	// Label
 	if(model->label)
 	{
-		rhs[out_id] = mxCreateDoubleMatrix(model->nr_class, 1, mxREAL);
-		ptr = mxGetPr(rhs[out_id]);
+		rhs[out_id] = bxCreateDoubleMatrix(model->nr_class, 1, bxREAL);
+		ptr = bxGetPr(rhs[out_id]);
 		for(i = 0; i < model->nr_class; i++)
 			ptr[i] = model->label[i];
 	}
 	else
-		rhs[out_id] = mxCreateDoubleMatrix(0, 0, mxREAL);
+		rhs[out_id] = bxCreateDoubleMatrix(0, 0, bxREAL);
 	out_id++;
 
 	// sv_indices
 	if(model->sv_indices)
 	{
-		rhs[out_id] = mxCreateDoubleMatrix(model->l, 1, mxREAL);
-		ptr = mxGetPr(rhs[out_id]);
+		rhs[out_id] = bxCreateDoubleMatrix(model->l, 1, bxREAL);
+		ptr = bxGetPr(rhs[out_id]);
 		for(i = 0; i < model->l; i++)
 			ptr[i] = model->sv_indices[i];
 	}
 	else
-		rhs[out_id] = mxCreateDoubleMatrix(0, 0, mxREAL);
+		rhs[out_id] = bxCreateDoubleMatrix(0, 0, bxREAL);
 	out_id++;
 
 	// probA
 	if(model->probA != NULL)
 	{
-		rhs[out_id] = mxCreateDoubleMatrix(n, 1, mxREAL);
-		ptr = mxGetPr(rhs[out_id]);
+		rhs[out_id] = bxCreateDoubleMatrix(n, 1, bxREAL);
+		ptr = bxGetPr(rhs[out_id]);
 		for(i = 0; i < n; i++)
 			ptr[i] = model->probA[i];
 	}
 	else
-		rhs[out_id] = mxCreateDoubleMatrix(0, 0, mxREAL);
+		rhs[out_id] = bxCreateDoubleMatrix(0, 0, bxREAL);
 	out_id ++;
 
 	// probB
 	if(model->probB != NULL)
 	{
-		rhs[out_id] = mxCreateDoubleMatrix(n, 1, mxREAL);
-		ptr = mxGetPr(rhs[out_id]);
+		rhs[out_id] = bxCreateDoubleMatrix(n, 1, bxREAL);
+		ptr = bxGetPr(rhs[out_id]);
 		for(i = 0; i < n; i++)
 			ptr[i] = model->probB[i];
 	}
 	else
-		rhs[out_id] = mxCreateDoubleMatrix(0, 0, mxREAL);
+		rhs[out_id] = bxCreateDoubleMatrix(0, 0, bxREAL);
 	out_id++;
 
 	// prob_density_marks
 	if(model->prob_density_marks != NULL)
 	{
 		int nr_marks = 10;
-		rhs[out_id] = mxCreateDoubleMatrix(nr_marks, 1, mxREAL);
-		ptr = mxGetPr(rhs[out_id]);
+		rhs[out_id] = bxCreateDoubleMatrix(nr_marks, 1, bxREAL);
+		ptr = bxGetPr(rhs[out_id]);
 		for(i = 0; i < nr_marks; i++)
 			ptr[i] = model->prob_density_marks[i];
 	}
 	else
-		rhs[out_id] = mxCreateDoubleMatrix(0, 0, mxREAL);
+		rhs[out_id] = bxCreateDoubleMatrix(0, 0, bxREAL);
 	out_id++;
 
 	// nSV
 	if(model->nSV)
 	{
-		rhs[out_id] = mxCreateDoubleMatrix(model->nr_class, 1, mxREAL);
-		ptr = mxGetPr(rhs[out_id]);
+		rhs[out_id] = bxCreateDoubleMatrix(model->nr_class, 1, bxREAL);
+		ptr = bxGetPr(rhs[out_id]);
 		for(i = 0; i < model->nr_class; i++)
 			ptr[i] = model->nSV[i];
 	}
 	else
-		rhs[out_id] = mxCreateDoubleMatrix(0, 0, mxREAL);
+		rhs[out_id] = bxCreateDoubleMatrix(0, 0, bxREAL);
 	out_id++;
 
 	// sv_coef
-	rhs[out_id] = mxCreateDoubleMatrix(model->l, model->nr_class-1, mxREAL);
-	ptr = mxGetPr(rhs[out_id]);
+	rhs[out_id] = bxCreateDoubleMatrix(model->l, model->nr_class-1, bxREAL);
+	ptr = bxGetPr(rhs[out_id]);
 	for(i = 0; i < model->nr_class-1; i++)
 		for(j = 0; j < model->l; j++)
 			ptr[(i*(model->l))+j] = model->sv_coef[i][j];
@@ -152,8 +152,8 @@ const char *model_to_matlab_structure(mxArray *plhs[], int num_of_feature, struc
 	// SVs
 	{
 		int ir_index, nonzero_element;
-		mwIndex *ir, *jc;
-		mxArray *pprhs[1], *pplhs[1];
+		baIndex *ir, *jc;
+		bxArray *pprhs[1], *pplhs[1];
 
 		if(model->param.kernel_type == PRECOMPUTED)
 		{
@@ -174,10 +174,10 @@ const char *model_to_matlab_structure(mxArray *plhs[], int num_of_feature, struc
 		}
 
 		// SV in column, easier accessing
-		rhs[out_id] = mxCreateSparse(num_of_feature, model->l, nonzero_element, mxREAL);
-		ir = mxGetIr(rhs[out_id]);
-		jc = mxGetJc(rhs[out_id]);
-		ptr = mxGetPr(rhs[out_id]);
+		rhs[out_id] = bxCreateSparse(num_of_feature, model->l, nonzero_element, bxREAL);
+		ir = bxGetIr(rhs[out_id]);
+		jc = bxGetJc(rhs[out_id]);
+		ptr = bxGetPr(rhs[out_id]);
 		jc[0] = ir_index = 0;
 		for(i = 0;i < model->l; i++)
 		{
@@ -210,34 +210,34 @@ const char *model_to_matlab_structure(mxArray *plhs[], int num_of_feature, struc
 	}
 
 	/* Create a struct matrix contains NUM_OF_RETURN_FIELD fields */
-	return_model = mxCreateStructMatrix(1, 1, NUM_OF_RETURN_FIELD, field_names);
+	return_model = bxCreateStructMatrix(1, 1, NUM_OF_RETURN_FIELD, field_names);
 
 	/* Fill struct matrix with input arguments */
 	for(i = 0; i < NUM_OF_RETURN_FIELD; i++)
-		mxSetField(return_model,0,field_names[i],mxDuplicateArray(rhs[i]));
+		bxSetField(return_model,0,field_names[i],bxDuplicateArray(rhs[i]));
 	/* return */
 	plhs[0] = return_model;
-	mxFree(rhs);
+	free(rhs);
 
 	return NULL;
 }
 
-struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const char **msg)
+struct svm_model *matlab_matrix_to_model(const bxArray *matlab_struct, const char **msg)
 {
 	int i, j, n, num_of_fields;
 	double *ptr;
 	int id = 0;
 	struct svm_node *x_space;
 	struct svm_model *model;
-	mxArray **rhs;
+	bxArray **rhs;
 
-	num_of_fields = mxGetNumberOfFields(matlab_struct);
+	num_of_fields = bxGetNumberOfFields(matlab_struct);
 	if(num_of_fields != NUM_OF_RETURN_FIELD)
 	{
 		*msg = "number of return field is not correct";
 		return NULL;
 	}
-	rhs = (mxArray **) mxMalloc(sizeof(mxArray *)*num_of_fields);
+	rhs = (bxArray **) malloc(sizeof(bxArray *)*num_of_fields);
 
 	for(i=0;i<num_of_fields;i++)
 		rhs[i] = mxGetFieldByNumber(matlab_struct, 0, i);
@@ -252,7 +252,7 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 	model->nSV = NULL;
 	model->free_sv = 1; // XXX
 
-	ptr = mxGetPr(rhs[id]);
+	ptr = bxGetPr(rhs[id]);
 	model->param.svm_type = (int)ptr[0];
 	model->param.kernel_type  = (int)ptr[1];
 	model->param.degree	  = (int)ptr[2];
@@ -260,18 +260,18 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 	model->param.coef0	  = ptr[4];
 	id++;
 
-	ptr = mxGetPr(rhs[id]);
+	ptr = bxGetPr(rhs[id]);
 	model->nr_class = (int)ptr[0];
 	id++;
 
-	ptr = mxGetPr(rhs[id]);
+	ptr = bxGetPr(rhs[id]);
 	model->l = (int)ptr[0];
 	id++;
 
 	// rho
 	n = model->nr_class * (model->nr_class-1)/2;
 	model->rho = (double*) malloc(n*sizeof(double));
-	ptr = mxGetPr(rhs[id]);
+	ptr = bxGetPr(rhs[id]);
 	for(i=0;i<n;i++)
 		model->rho[i] = ptr[i];
 	id++;
@@ -280,7 +280,7 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 	if(mxIsEmpty(rhs[id]) == 0)
 	{
 		model->label = (int*) malloc(model->nr_class*sizeof(int));
-		ptr = mxGetPr(rhs[id]);
+		ptr = bxGetPr(rhs[id]);
 		for(i=0;i<model->nr_class;i++)
 			model->label[i] = (int)ptr[i];
 	}
@@ -290,7 +290,7 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 	if(mxIsEmpty(rhs[id]) == 0)
 	{
 		model->sv_indices = (int*) malloc(model->l*sizeof(int));
-		ptr = mxGetPr(rhs[id]);
+		ptr = bxGetPr(rhs[id]);
 		for(i=0;i<model->l;i++)
 			model->sv_indices[i] = (int)ptr[i];
 	}
@@ -300,7 +300,7 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 	if(mxIsEmpty(rhs[id]) == 0)
 	{
 		model->probA = (double*) malloc(n*sizeof(double));
-		ptr = mxGetPr(rhs[id]);
+		ptr = bxGetPr(rhs[id]);
 		for(i=0;i<n;i++)
 			model->probA[i] = ptr[i];
 	}
@@ -310,7 +310,7 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 	if(mxIsEmpty(rhs[id]) == 0)
 	{
 		model->probB = (double*) malloc(n*sizeof(double));
-		ptr = mxGetPr(rhs[id]);
+		ptr = bxGetPr(rhs[id]);
 		for(i=0;i<n;i++)
 			model->probB[i] = ptr[i];
 	}
@@ -321,7 +321,7 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 	{
 		int nr_marks = 10;
 		model->prob_density_marks = (double*) malloc(nr_marks*sizeof(double));
-		ptr = mxGetPr(rhs[id]);
+		ptr = bxGetPr(rhs[id]);
 		for(i=0;i<nr_marks;i++)
 			model->prob_density_marks[i] = ptr[i];
 	}
@@ -331,14 +331,14 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 	if(mxIsEmpty(rhs[id]) == 0)
 	{
 		model->nSV = (int*) malloc(model->nr_class*sizeof(int));
-		ptr = mxGetPr(rhs[id]);
+		ptr = bxGetPr(rhs[id]);
 		for(i=0;i<model->nr_class;i++)
 			model->nSV[i] = (int)ptr[i];
 	}
 	id++;
 
 	// sv_coef
-	ptr = mxGetPr(rhs[id]);
+	ptr = bxGetPr(rhs[id]);
 	model->sv_coef = (double**) malloc((model->nr_class-1)*sizeof(double));
 	for( i=0 ; i< model->nr_class -1 ; i++ )
 		model->sv_coef[i] = (double*) malloc((model->l)*sizeof(double));
@@ -351,8 +351,8 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 	{
 		int sr, elements;
 		int num_samples;
-		mwIndex *ir, *jc;
-		mxArray *pprhs[1], *pplhs[1];
+		baIndex *ir, *jc;
+		bxArray *pprhs[1], *pplhs[1];
 
 		// transpose SV
 		pprhs[0] = rhs[id];
@@ -364,13 +364,13 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 		}
 		rhs[id] = pplhs[0];
 
-		sr = (int)mxGetN(rhs[id]);
+		sr = (int)bxGetN(rhs[id]);
 
-		ptr = mxGetPr(rhs[id]);
-		ir = mxGetIr(rhs[id]);
-		jc = mxGetJc(rhs[id]);
+		ptr = bxGetPr(rhs[id]);
+		ir = bxGetIr(rhs[id]);
+		jc = bxGetJc(rhs[id]);
 
-		num_samples = (int)mxGetNzmax(rhs[id]);
+		num_samples = (int)bxGetNzmax(rhs[id]);
 
 		elements = num_samples + sr;
 
@@ -394,7 +394,7 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 
 		id++;
 	}
-	mxFree(rhs);
+	free(rhs);
 
 	return model;
 }
