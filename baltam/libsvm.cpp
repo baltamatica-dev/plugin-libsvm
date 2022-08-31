@@ -76,22 +76,22 @@ bexfun_info_t * bxPluginFunctions() {
     func_list_dyn[i].help = libsvm_version_help;
 
     i++;
-    func_list_dyn[i].name = "svmpredict";
+    func_list_dyn[i].name = "__svmpredict_impl";
     func_list_dyn[i].ptr  = svmpredict;
     func_list_dyn[i].help = svmpredict_help;
 
     i++;
-    func_list_dyn[i].name = "svmtrain";
+    func_list_dyn[i].name = "__svmtrain_impl";
     func_list_dyn[i].ptr  = svmtrain;
     func_list_dyn[i].help = svmtrain_help;
 
     i++;
-    func_list_dyn[i].name = "svmread";
+    func_list_dyn[i].name = "__svmread_impl";
     func_list_dyn[i].ptr  = svmread;
     func_list_dyn[i].help = svmread_help;
     
     i++;
-    func_list_dyn[i].name = "svmwrite";
+    func_list_dyn[i].name = "__svmwrite_impl";
     func_list_dyn[i].ptr  = svmwrite;
     func_list_dyn[i].help = svmwrite_help;
 
