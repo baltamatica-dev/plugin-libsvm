@@ -315,6 +315,7 @@ int read_problem_sparse(const bxArray *label_vec, const bxArray *instance_mat)
 
 	// transpose instance matrix
 	{
+#ifndef BUILD_WITH_BEX_WARPPER	
 		bxArray *prhs[1], *plhs[1];
 		prhs[0] = bxDuplicateArray(instance_mat);
 		if(mexCallMATLAB(1, plhs, 1, prhs, "transpose"))
@@ -324,6 +325,9 @@ int read_problem_sparse(const bxArray *label_vec, const bxArray *instance_mat)
 		}
 		instance_mat_col = plhs[0];
 		bxDestroyArray(prhs[0]);
+#else
+		instance_mat_col = bxDuplicateArray(instance_mat);
+#endif // BUILD_WITH_BEX_WARPPER
 	}
 
 	// each column is one instance

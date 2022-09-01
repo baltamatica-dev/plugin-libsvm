@@ -202,11 +202,15 @@ const char *model_to_matlab_structure(bxArray *plhs[], int num_of_feature, struc
 				jc[i+1] = jc[i] + x_index;
 			}
 		}
+		bxSparseFinalize(rhs[out_id]);
+
+#ifndef BUILD_WITH_BEX_WARPPER
 		// transpose back to SV in row
 		pprhs[0] = rhs[out_id];
 		if(mexCallMATLAB(1, pplhs, 1, pprhs, "transpose"))
 			return "cannot transpose SV matrix";
 		rhs[out_id] = pplhs[0];
+#endif // BUILD_WITH_BEX_WARPPER		
 		out_id++;
 	}
 
