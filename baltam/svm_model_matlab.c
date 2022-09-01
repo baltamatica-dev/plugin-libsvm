@@ -359,6 +359,7 @@ struct svm_model *matlab_matrix_to_model(const bxArray *matlab_struct, const cha
 		baIndex *ir, *jc;
 		bxArray *pprhs[1], *pplhs[1];
 
+#ifndef BUILD_WITH_BEX_WARPPER
 		// transpose SV
 		pprhs[0] = rhs[id];
 		if(mexCallMATLAB(1, pplhs, 1, pprhs, "transpose"))
@@ -368,6 +369,7 @@ struct svm_model *matlab_matrix_to_model(const bxArray *matlab_struct, const cha
 			return NULL;
 		}
 		rhs[id] = pplhs[0];
+#endif // BUILD_WITH_BEX_WARPPER	
 
 		sr = (int)bxGetN(rhs[id]);
 
