@@ -62,7 +62,7 @@ void read_problem(const char *filename, int nlhs, bxArray *plhs[])
 	size_t elements, k, i, l=0;
 	FILE *fp = fopen(filename,"r");
 	char *endptr;
-	baIndex *ir, *jc;
+	baSparseIndex *ir, *jc;
 	double *labels, *samples;
 
 	if(fp == NULL)
@@ -170,11 +170,13 @@ void read_problem(const char *filename, int nlhs, bxArray *plhs[])
 		}
 	}
 	jc[l] = k;
+	bxSparseFinalize(plhs[1]);
 
 	fclose(fp);
 	free(line);
 
 	{
+#ifndef BUILD_WITH_BEX_WARPPER	
 		bxArray *rhs[1], *lhs[1];
 		rhs[0] = plhs[1];
 		if(mexCallMATLAB(1, lhs, 1, rhs, "transpose"))
@@ -184,6 +186,7 @@ void read_problem(const char *filename, int nlhs, bxArray *plhs[])
 			return;
 		}
 		plhs[1] = lhs[0];
+#endif // BUILD_WITH_BEX_WARPPER
 	}
 }
 
