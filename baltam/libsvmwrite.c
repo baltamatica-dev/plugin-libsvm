@@ -41,6 +41,7 @@ void libsvmwrite(const char *filename, const bxArray *label_vec, const bxArray *
 
 	// transpose instance matrix
 	{
+#ifndef BUILD_WITH_BEX_WARPPER		
 		bxArray *prhs[1], *plhs[1];
 		prhs[0] = bxDuplicateArray(instance_mat);
 		if(mexCallMATLAB(1, plhs, 1, prhs, "transpose"))
@@ -50,6 +51,9 @@ void libsvmwrite(const char *filename, const bxArray *label_vec, const bxArray *
 		}
 		instance_mat_col = plhs[0];
 		bxDestroyArray(prhs[0]);
+#else
+		instance_mat_col = bxDuplicateArray(instance_mat);
+#endif // BUILD_WITH_BEX_WARPPER
 	}
 
 	// the number of instance

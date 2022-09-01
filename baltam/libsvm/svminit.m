@@ -1,0 +1,28 @@
+function ret = svminit()
+%svminit - 初始化 libsvm 插件
+%
+% Usage:
+%   ret = svminit();
+%
+% 执行此脚本以初始化 libsvm 插件.
+% 返回值
+%   - 为 0 说明初始化成功
+%   - 其他值说明初始化失败
+%
+% 初始化函数可以多次执行.
+ret = -1;
+unload_plugin("libsvm");
+ret = load_plugin("libsvm");
+
+% 加载当前路径下脚本
+addpath(".");
+
+% 判断插件是否加载成功
+if (0==ret)
+    disp("libsvm 插件加载成功.");
+else
+    disp("libsvm 插件失败.");
+    disp("请参考以上出现的报错信息进行修正.");
+end % if (0==ret)
+
+end
