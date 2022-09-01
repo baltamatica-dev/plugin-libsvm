@@ -60,7 +60,10 @@ _model = __svmtrain_impl(label_vector, _todo_instance_matrix_full, char(libsvm_o
 %% 返回值后处理
 % 转置 .SVs
 % TODO: transpose() 支持稀疏数组时: 消除 full/sparse 调用
-_model.SVs = sparse(transpose(full(_model.SVs)));
+validation_mode = _parser_opt(libsvm_options);
+if ~validation_mode
+    _model.SVs = sparse(transpose(full(_model.SVs)));
+end
 model = _model;
 
 end
