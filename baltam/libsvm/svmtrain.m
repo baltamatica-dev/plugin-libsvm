@@ -60,10 +60,36 @@ _model = __svmtrain_impl(label_vector, _todo_instance_matrix_full, char(libsvm_o
 %% 返回值后处理
 % 转置 .SVs
 % TODO: transpose() 支持稀疏数组时: 消除 full/sparse 调用
-validation_mode = _parser_opt(libsvm_options);
+validation_mode = _parse_opt(libsvm_options);
 if ~validation_mode
     _model.SVs = sparse(transpose(full(_model.SVs)));
 end
 model = _model;
 
 end % SPDX-License-Identifier: BSD-3-Clause
+
+%% 解析 libsvm_options 判断是否处于交叉验证模式下
+function has_v = _parse_opt(libsvm_options)
+has_v = false;
+char_libsvm_options = char(libsvm_options);
+is_flag = false;
+
+for c = char_libsvm_options
+    if ' ' == c
+        continue;
+    end
+    if '-' == c
+        is_flag = true;
+        continue;
+    end
+    if is_flag
+        if 'v' == c
+            has_v = true;
+            break;
+        end
+        is_flag = false;
+        continue;
+    end
+end
+
+end % function has_v = _parse_opt(libsvm_options)
