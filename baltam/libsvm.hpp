@@ -12,13 +12,13 @@ extern const char *field_names[];
 
 
 BALTAM_PLUGIN_FCN(svmpredict);
-extern const char* svmpredict_help;
+// extern const char* svmpredict_help;
 BALTAM_PLUGIN_FCN(svmtrain);
-extern const char* svmtrain_help;
+// extern const char* svmtrain_help;
 BALTAM_PLUGIN_FCN(svmread);
-extern const char* svmread_help;
+// extern const char* svmread_help;
 BALTAM_PLUGIN_FCN(svmwrite);
-extern const char* svmwrite_help;
+// extern const char* svmwrite_help;
 
 extern bxArray *mxGetFieldByNumber(const bxArray *pm, baIndex index, int fieldnumber);
 extern bool mxIsEmpty(const bxArray *arr);

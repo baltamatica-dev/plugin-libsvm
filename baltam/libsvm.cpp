@@ -20,13 +20,13 @@ int mexCallMATLAB(int nlhs, bxArray *plhs[], int nrhs, bxArray *prhs[], const ch
 const char* libsvm_version_help = R"(
 libsvm 绑定
 
-    libsvm 插件
+    libsvm 插件 (v20220902+12:00-alpha-测试版)
     Github:     https://github.com/baltamatica-dev/plugin-libsvm
     LICENSE:    BSD-3-Clause license
     Copyright (c) 2022 Chengyu HAN
 
 版本信息
-    bex SDK: 2.1.0.6
+    bex SDK: 2.2.1
     cjlin1/libsvm (324612f)
         Github:     https://github.com/cjlin1/libsvm
         LICENSE:    BSD-3-Clause license
@@ -78,22 +78,22 @@ bexfun_info_t * bxPluginFunctions() {
     i++;
     func_list_dyn[i].name = "__svmpredict_impl";
     func_list_dyn[i].ptr  = svmpredict;
-    func_list_dyn[i].help = svmpredict_help;
+    func_list_dyn[i].help = "See help for `svmpredict`\n  You should call `svminit();` first.";
 
     i++;
     func_list_dyn[i].name = "__svmtrain_impl";
     func_list_dyn[i].ptr  = svmtrain;
-    func_list_dyn[i].help = svmtrain_help;
+    func_list_dyn[i].help = "See help for `svmtrain`\n  You should call `svminit();` first.";
 
     i++;
     func_list_dyn[i].name = "__svmread_impl";
     func_list_dyn[i].ptr  = svmread;
-    func_list_dyn[i].help = svmread_help;
+    func_list_dyn[i].help = "See help for `svmread`\n  You should call `svminit();` first.";
     
     i++;
     func_list_dyn[i].name = "__svmwrite_impl";
     func_list_dyn[i].ptr  = svmwrite;
-    func_list_dyn[i].help = svmwrite_help;
+    func_list_dyn[i].help = "See help for `svmwrite`\n  You should call `svminit();` first.";
 
     // 最后一个元素, `name` 字段必须为空字符串 `""`
     i++;
