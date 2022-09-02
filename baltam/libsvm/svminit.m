@@ -25,4 +25,4 @@ else
     disp("请参考以上出现的报错信息进行修正.");
 end % if (0==ret)
 
-end
+end % SPDX-License-Identifier: BSD-3-Clause

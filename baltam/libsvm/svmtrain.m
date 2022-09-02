@@ -66,4 +66,4 @@ if ~validation_mode
 end
 model = _model;
 
-end
+end % SPDX-License-Identifier: BSD-3-Clause

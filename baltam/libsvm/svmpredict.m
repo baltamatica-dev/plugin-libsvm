@@ -61,4 +61,4 @@ end
 
 %% 返回值后处理
 
-end
+end % SPDX-License-Identifier: BSD-3-Clause

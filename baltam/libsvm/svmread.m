@@ -9,4 +9,4 @@ function [label_vector, instance_matrix] = svmread(filename)
 _todo_instance_matrix_full = full(_instance_matrix);
 instance_matrix = sparse(transpose(_todo_instance_matrix_full));
 
-end
+end % SPDX-License-Identifier: BSD-3-Clause

@@ -1,4 +1,4 @@
-# This Makefile is used under Linux
+# SPDX-License-Identifier: BSD-3-Clause
 
 CXX ?= g++
 CXXFLAGS = -Wall -std=c++17 -shared -O3 -fPIC \

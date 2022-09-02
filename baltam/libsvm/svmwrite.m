@@ -26,4 +26,4 @@ end % if label_M ~= instance_M
 instance_matrix_T = sparse(transpose(_todo_instance_matrix_full));
 __svmwrite_impl(char(filename), label_vector, instance_matrix_T);
 
-end
+end % SPDX-License-Identifier: BSD-3-Clause
