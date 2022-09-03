@@ -17,7 +17,7 @@ int mexCallMATLAB(int nlhs, bxArray *plhs[], int nrhs, bxArray *prhs[], const ch
 }
 
 
-const char* libsvm_version_help = R"(
+const char* svm_version_help = R"(
 libsvm 绑定
 
     libsvm 插件 (v20220902+12:00-alpha-测试版)
@@ -31,10 +31,10 @@ libsvm 绑定
         Github:     https://github.com/cjlin1/libsvm
         LICENSE:    BSD-3-Clause license
         Copyright (c) Chih-Chung Chang and Chih-Jen Lin
-)"; /* libsvm_version_help */
-BALTAM_PLUGIN_FCN(libsvm_version) {
-    std::cout << libsvm_version_help << std::endl;
-} /* libsvm_version */
+)"; /* svm_version_help */
+BALTAM_PLUGIN_FCN(svm_version) {
+    bxPrintf(svm_version_help);
+} /* svm_version */
 
 
 /**
@@ -71,9 +71,9 @@ bexfun_info_t * bxPluginFunctions() {
     bexfun_info_t* func_list_dyn = new bexfun_info_t[TOTAL_PLUGIN_FUNCTIONS + 1];
 
     size_t i = 0;
-    func_list_dyn[i].name = "libsvm_version";
-    func_list_dyn[i].ptr  = libsvm_version;
-    func_list_dyn[i].help = libsvm_version_help;
+    func_list_dyn[i].name = "svm_version";
+    func_list_dyn[i].ptr  = svm_version;
+    func_list_dyn[i].help = svm_version_help;
 
     i++;
     func_list_dyn[i].name = "__svmpredict_impl";
