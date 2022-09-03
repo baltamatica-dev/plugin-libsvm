@@ -32,30 +32,41 @@ function model = svmtrain(label_vector, instance_matrix, libsvm_options)
 %    -v n           : n-fold cross validation mode
 %    -q             : quiet mode (no outputs)
 
+%% 输入参数检查
+% -- 参数个数
+if 3 ~= nargin
+    disp("输入参数应为 3 个.");
+    % 引发错误输出帮助
+    __svmwrite_impl();
+    return;
+end
+
+% -- 参数维度
 % TODO: 
 %   - size() 可以正确计算稀疏数组
 %   - transpose() 支持稀疏数组时
 _todo_instance_matrix_full = full(instance_matrix);
-
-%% 输入参数检查
 [label_M, label_N] = size(full(label_vector));
 [instance_M, instance_N] = size(_todo_instance_matrix_full);
 if label_M ~= instance_M
-    error(sprintf( ...
+    disp(sprintf( ...
         "输入标签和模型维度不匹配。请检查输入参数。\n\t" + ...
             "label_length:%d ~= instance_length:%d", ...
         label_M, instance_M ...
     ));
+    return;
 end % if label_M ~= instance_M
 
 %% 输入预处理
-% 转置 instance_matrix 便于后续使用
+% 转置 instance_matrix 便于后续使用 (稠密形式无需转置)
 % instance_matrix_T = sparse(transpose(_todo_instance_matrix_full));
+% 文件名兼容字符串
+libsvm_options_chars = char(libsvm_options);
 
 %% 调用 bex 函数
 % note: instance_matrix 输入稠密形式。避开预先计算核函数的 full 调用
 % TODO: 优化 full 调用：仅针对需要的情况展开参数为稠密形式
-_model = __svmtrain_impl(label_vector, _todo_instance_matrix_full, char(libsvm_options));
+_model = __svmtrain_impl(label_vector, _todo_instance_matrix_full, libsvm_options_chars);
 
 %% 返回值后处理
 % 转置 .SVs
