@@ -20,7 +20,7 @@ int mexCallMATLAB(int nlhs, bxArray *plhs[], int nrhs, bxArray *prhs[], const ch
 const char* svm_version_help = R"(
 libsvm 绑定
 
-    libsvm 插件 (v20220902+12:00-alpha-测试版)
+    libsvm 插件 (v20220903+12:00-alpha-测试版)
     Github:     https://github.com/baltamatica-dev/plugin-libsvm
     LICENSE:    BSD-3-Clause license
     Copyright (c) 2022 Chengyu HAN
