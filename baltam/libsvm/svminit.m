@@ -11,7 +11,7 @@ function ret = svminit()
 %
 % 初始化函数可以多次执行.
 
-PLUGIN_NAME = "libsvm";
+PLUGIN_NAME = "svm";
 ret = -1;
 unload_plugin(PLUGIN_NAME);
 ret = load_plugin(PLUGIN_NAME);
@@ -21,9 +21,9 @@ addpath(".");
 
 % 判断插件是否加载成功
 if (0==ret)
-    disp("libsvm 插件加载成功.");
+    disp(PLUGIN_NAME + " 插件加载成功.");
 else
-    disp("libsvm 插件失败.");
+    disp(PLUGIN_NAME + " 插件失败.");
     disp("请参考以上出现的报错信息进行修正.");
 end % if (0==ret)
 
