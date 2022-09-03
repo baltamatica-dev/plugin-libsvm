@@ -10,9 +10,11 @@ function ret = svminit()
 %   - 其他值说明初始化失败
 %
 % 初始化函数可以多次执行.
+
+PLUGIN_NAME = "libsvm";
 ret = -1;
-unload_plugin("libsvm");
-ret = load_plugin("libsvm");
+unload_plugin(PLUGIN_NAME);
+ret = load_plugin(PLUGIN_NAME);
 
 % 加载当前路径下脚本
 addpath(".");
