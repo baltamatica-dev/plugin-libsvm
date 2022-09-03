@@ -2,7 +2,8 @@ function [predicted_label, accuracy, prob_estimates] = svmpredict(label_vector, 
 %svmpredict - 依据模型进行预测
 %
 % Usage: 
-%   [predicted_label, accuracy, decision_values/prob_estimates] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
+%   [predicted_label, accuracy, decision_values] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
+%   [predicted_label, accuracy, prob_estimates] = svmpredict(testing_label_vector, testing_instance_matrix, model, '-b 1')
 %   [predicted_label] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
 %
 %    Parameters:
